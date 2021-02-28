@@ -15,6 +15,10 @@ namespace DeafHearingAID
         TaskCompletionSource<int> stopRecognition;
 
         SpeechRecognizer speechrecognizer;
+
+        SpeechConfig config;
+
+        bool isinprogress = false;
         public MainPage()
         {
             InitializeComponent();
@@ -28,10 +32,16 @@ namespace DeafHearingAID
             try
             {
 
+                isinprogress = true;
+
                 bool micenabled = await GetMicroPhoneEnabledStatusAsync();
 
-                SpeechConfig config = SpeechConfig.FromSubscription("67c6d46689c947299cd10be67e63f6e0", "eastus");
+                if (config == null)
+                {
+                    config = SpeechConfig.FromSubscription("67c6d46689c947299cd10be67e63f6e0", "eastus");
+                }
 
+                config.SpeechRecognitionLanguage = GetUserSelectedLang(pickerlang.SelectedItem.ToString());
 
                 string audiotext = string.Empty;
 
@@ -93,20 +103,64 @@ namespace DeafHearingAID
             }
         }
 
-        private void UpdateUI(string resultStr)
+
+        private string GetUserSelectedLang(string userselectedlang)
+        {
+            switch (userselectedlang)
+            {
+                case "English":
+                    return "en-IN";
+
+                case "Gujarati":
+                    return "gu-IN";
+
+                case "Hindi":
+                    return "hi-IN";
+
+                case "Marathi":
+                    return "mr-IN";
+
+                case "Tamil":
+                    return "ta-IN";
+
+                case "Telugu":
+                    return "te-IN";
+
+                //english as default language
+
+                default:
+                    return "en-IN";
+
+            }
+        }
+        private void UpdateUI(string stringidentified)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                editor.Text += resultStr;
+                editor.Text += stringidentified;
             });
         }
 
         private async void btnstop_Clicked(object sender, EventArgs e)
         {
-            if (speechrecognizer != null)
+            try
             {
-                await speechrecognizer.StopContinuousRecognitionAsync();
+                isinprogress = false;
+
+                if (speechrecognizer != null)
+                {
+                    await speechrecognizer.StopContinuousRecognitionAsync();
+                }
             }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                isinprogress = false;
+            }
+
         }
 
 
@@ -117,10 +171,24 @@ namespace DeafHearingAID
             bool micAccessGranted = await DependencyService.Get<IMicrophoneService>().GetPermissionsAsync();
             if (!micAccessGranted)
             {
-                UpdateUI("Please give access to microphone");
+                UpdateUI("Please Provide access to Microphone");
             }
 
             return micAccessGranted;
+        }
+
+        private async void pickerlang_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(editor.Text))
+            {
+                bool response = await DisplayAlert("Are you sure to change Langugae?", "Changing Language will clear data from recognised text", "Ok", "Cancel", FlowDirection.MatchParent);
+
+                if (response)
+                {
+                    editor.Text = string.Empty;
+                }
+            }
+
         }
     }
 }
