@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DeafHearingAID.MainPage">
+
+    <ScrollView>
+        <StackLayout>
+
+
+            <StackLayout Margin="10,75,10,10" HorizontalOptions="FillAndExpand"  Orientation="Horizontal">
+                <Label x:Name="lbllang"  Text="Language"></Label>
+                <Picker x:Name="pickerlang"  HorizontalOptions="FillAndExpand">
+                    <Picker.Items>
+                        <x:String >English</x:String>
+                        <x:String>Gujarati</x:String>
+                        <x:String>Hindi</x:String>
+                        <x:String>Marathi</x:String>
+                        <x:String>Tamil</x:String>
+                        <x:String>Telugu</x:String>
+                    </Picker.Items>
+                </Picker>
+            </StackLayout>
+
+            <Editor x:Name="editor" IsReadOnly="True" Margin="10"  HorizontalOptions="FillAndExpand" Placeholder="Text of another person speak will be displayed after the recording , please use start button once person start the conversation and stop when it ends." HeightRequest="300" MinimumHeightRequest="150" />
+            <Button Text="Save" x:Name="btnsave" HorizontalOptions="FillAndExpand" Margin="10" ></Button>
+            <StackLayout Orientation="Horizontal"  VerticalOptions="EndAndExpand" Padding="0" Margin="0,0,0,50">
+                <Button x:Name="btnstart" BackgroundColor="AntiqueWhite" Text="Start Listning" CornerRadius="15" Clicked="btnstart_Clicked" HorizontalOptions="CenterAndExpand"></Button>
+                <Button x:Name="btnstop" Clicked="btnstop_Clicked" BackgroundColor="AntiqueWhite" CornerRadius="15" Text="Stop Listing" HorizontalOptions="CenterAndExpand" ></Button>
+            </StackLayout>
+        </StackLayout>
+
+    </ScrollView>
+
+</ContentPage>
